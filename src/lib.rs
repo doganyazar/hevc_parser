@@ -205,7 +205,7 @@ impl HevcParser {
                     nal.decoded_frame_index = self.decoded_index;
                     self.current_frame.nals.push(nal.clone());
                 }
-                _ => ()
+                _ => (),
             };
 
             self.nals.push(nal.clone());
@@ -294,14 +294,16 @@ impl HevcParser {
             if existing_vps == vps {
                 self.vps.remove(id);
 
-                let sps_to_remove: Vec<SPSNAL> = self
-                    .sps
-                    .clone()
-                    .into_iter()
-                    .filter(|sps| sps.vps_id == vps.vps_id)
-                    .collect();
+                // Not clear why this vps removes the sps we need so commenting!
 
-                sps_to_remove.iter().for_each(|sps| self.remove_sps(sps));
+                // let sps_to_remove: Vec<SPSNAL> = self
+                //     .sps
+                //     .clone()
+                //     .into_iter()
+                //     .filter(|sps| sps.vps_id == vps.vps_id)
+                //     .collect();
+
+                // sps_to_remove.iter().for_each(|sps| self.remove_sps(sps));
             }
         }
     }
@@ -395,6 +397,19 @@ impl HevcParser {
 
     pub fn get_nals(&self) -> &Vec<NALUnit> {
         &self.nals
+    }
+
+    pub fn parse_nalunits(&mut self, data: &[u8]) {
+        let mut offsets = vec![];
+        self.get_offsets(&data, &mut offsets);
+
+        if let Some(last_offset) = offsets.pop() {
+            let _x = self.split_nals(data, &offsets, last_offset, true);
+        }
+    }
+
+    pub fn get_sps(&self) -> &Vec<SPSNAL> {
+        &self.sps
     }
 }
 

@@ -222,4 +222,26 @@ impl SPSNAL {
 
         Ok(sps)
     }
+
+    pub fn pixel_dimensions(&self) -> (u16, u16) {
+        (self.width as u16, self.height as u16)
+    }
+
+    pub fn chroma_format(&self) -> u8 {
+        self.chroma_format_idc as u8
+    }
+
+    pub fn frame_rate(&self) -> Option<f32> {
+        if self.vui_present {
+            return self.vui_parameters.frame_rate();
+        }
+        None
+    }
+
+    pub fn aspect_ratio(&self) -> Option<(u16, u16)> {
+        if self.vui_present {
+            return self.vui_parameters.aspect_ratio();
+        }
+        None
+    }
 }
