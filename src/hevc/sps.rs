@@ -223,8 +223,40 @@ impl SPSNAL {
         Ok(sps)
     }
 
-    pub fn pixel_dimensions(&self) -> (u16, u16) {
-        (self.width as u16, self.height as u16)
+    pub fn dimensions(&self) -> (u64, u64) {
+        (self.width, self.height)
+    }
+
+    // this is to be used to get video size.
+    // Got the cropping logic from chromium's h265_parser.cc::GetVisibleRect()
+    pub fn visible_rectangle(&self) -> Option<(u16, u16)> {
+        let (width, height) = self.dimensions();
+        let (sub_width_c, sub_height_c) = match self.chroma_format_idc {
+            1 => (2, 2),
+            2 => (2, 1),
+            _ => (1, 1),
+        };
+
+        // Take cropping into consideration
+        let left = (self.conf_win_left_offset + self.vui_parameters.def_disp_win_left_offset)
+            * sub_width_c;
+        let right = (self.conf_win_right_offset + self.vui_parameters.def_disp_win_right_offset)
+            * sub_width_c;
+        let top =
+            (self.conf_win_top_offset + self.vui_parameters.def_disp_win_top_offset) * sub_height_c;
+        let bottom = (self.conf_win_bottom_offset + self.vui_parameters.def_disp_win_bottom_offset)
+            * sub_height_c;
+
+        let height_crop = top + bottom;
+        let width_crop = left + right;
+
+        if let (Some(w), Some(h)) = (
+            width.checked_sub(width_crop),
+            height.checked_sub(height_crop),
+        ) {
+            return Some((w as u16, h as u16));
+        }
+        None
     }
 
     pub fn chroma_format(&self) -> u8 {

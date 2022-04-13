@@ -9,7 +9,7 @@ pub mod utils;
 use hevc::*;
 use pps::PPSNAL;
 use slice::SliceNAL;
-use sps::SPSNAL;
+pub use sps::SPSNAL;
 use vps::VPSNAL;
 
 use utils::clear_start_code_emulation_prevention_3_byte;

@@ -28,10 +28,10 @@ pub struct VuiParameters {
     frame_field_info_present_flag: bool,
 
     default_display_window_flag: bool,
-    def_disp_win_left_offset: u64,
-    def_disp_win_right_offset: u64,
-    def_disp_win_top_offset: u64,
-    def_disp_win_bottom_offset: u64,
+    pub def_disp_win_left_offset: u64,
+    pub def_disp_win_right_offset: u64,
+    pub def_disp_win_top_offset: u64,
+    pub def_disp_win_bottom_offset: u64,
 
     vui_timing_info_present_flag: bool,
     vui_num_units_in_tick: u32,
