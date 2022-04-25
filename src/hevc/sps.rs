@@ -12,7 +12,7 @@ pub struct SPSNAL {
     max_sub_layers: u8,
     temporal_id_nesting_flag: bool,
 
-    ptl: ProfileTierLevel,
+    pub ptl: ProfileTierLevel,
     pub(crate) sps_id: u64,
     chroma_format_idc: u64,
     pub(crate) separate_colour_plane_flag: bool,
